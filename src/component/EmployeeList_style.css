@@ -18,3 +18,14 @@ tr:nth-child(even) {
 .list-header {
     text-align: center;
 }
+
+.search-bar {
+    width: 20%;
+    align-self: center;
+}
+
+.pie-div-class {
+    align-items: center;
+    align-content: center;
+    align-self: center;
+}

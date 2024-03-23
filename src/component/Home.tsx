@@ -1,17 +1,22 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import AddEmployee from './AddEmployee';
 import EditEmployee from './EditEmployee';
 import EmployeeList from './EmployeeList';
-import {IEmployee, PageEnum, dummyEmployeeList} from './Employee_type';
+import {IEmployee, PageEnum} from './Employee_type';
 import './Home_style.css';
 
 const Home = () => {
-    const [employeeList, setEmployeeList] = useState(
-        dummyEmployeeList as IEmployee[],
-    );
+    const [employeeList, setEmployeeList] = useState([] as IEmployee[]);
 
     const [shownPage, setShownPage] = useState(PageEnum.list);
     const [dataToEdit, setDataToEdit] = useState({} as IEmployee);
+
+    useEffect(() => {
+        const listInString = window.localStorage.getItem('EmployeeList');
+        if (listInString) {
+            _setEmployeeList(JSON.parse(listInString));
+        }
+    }, []); // we use [] to call it only once, if we delete it then it will call everytime
 
     const onAddEmployeeClickHnd = () => {
         setShownPage(PageEnum.add);
@@ -21,8 +26,13 @@ const Home = () => {
         setShownPage(PageEnum.list);
     };
 
+    const _setEmployeeList = (list: IEmployee[]) => {
+        setEmployeeList(list);
+        window.localStorage.setItem('EmployeeList', JSON.stringify(list));
+    };
+
     const addEmployeeHnd = (data: IEmployee) => {
-        setEmployeeList([...employeeList, data]);
+        _setEmployeeList([...employeeList, data]);
     };
 
     const deleteEmployee = (data: IEmployee) => {
@@ -30,7 +40,7 @@ const Home = () => {
         const tempList = [...employeeList];
 
         tempList.splice(indexToDelete, 1);
-        setEmployeeList(tempList);
+        _setEmployeeList(tempList);
     };
 
     const editEmployeeData = (data: IEmployee) => {
@@ -43,7 +53,7 @@ const Home = () => {
         const indexOfRecord = employeeList.indexOf(filterData);
         const tempData = [...employeeList];
         tempData[indexOfRecord] = data;
-        setEmployeeList(tempData);
+        _setEmployeeList(tempData);
     };
 
     return (
